@@ -1,11 +1,17 @@
 "use client";
 import { api } from "@/convex/_generated/api";
 import { SignInButton, UserButton } from "@clerk/nextjs";
-import { Authenticated, Unauthenticated, useMutation } from "convex/react";
+import {
+  Authenticated,
+  Unauthenticated,
+  useMutation,
+  useQuery,
+} from "convex/react";
 
 import Image from "next/image";
 
 export default function Home() {
+  const documents = useQuery(api.documents.getDocuments);
   const createDocuments = useMutation(api.documents.createDocument);
 
   return (
@@ -26,6 +32,8 @@ export default function Home() {
         >
           Click me
         </button>
+
+        {documents?.map((doc) => <div key={doc._id}>{doc.title}</div>)}
       </Authenticated>
     </main>
   );
