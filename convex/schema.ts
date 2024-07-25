@@ -5,5 +5,6 @@ export default defineSchema({
   documents: defineTable({
     content: v.string(),
     title: v.string(),
-  }),
+    tokenIdentifier: v.string(),
+  }).index("by_tokenIdentifier", ["tokenIdentifier"]),
 });
