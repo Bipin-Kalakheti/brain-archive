@@ -1,5 +1,5 @@
 "use client";
-import { ThemeProvider } from "@/components/ui/theme-providers";
+import { ThemeProvider } from "@/components/theme-providers";
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
