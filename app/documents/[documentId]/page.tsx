@@ -3,6 +3,7 @@
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
+import ChatPanel from "./chat-panel";
 
 export default function DocumentPage({
   params,
@@ -29,7 +30,7 @@ export default function DocumentPage({
           )}
         </div>
 
-        <div className="bg-gray-900 w-60 rounded">Chat</div>
+        <ChatPanel/>
       </div>
     </main>
   );
