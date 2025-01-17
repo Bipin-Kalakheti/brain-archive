@@ -30,7 +30,7 @@ export default function DocumentPage({
           )}
         </div>
 
-        <ChatPanel/>
+        <ChatPanel documentId={document._id}/>
       </div>
     </main>
   );
