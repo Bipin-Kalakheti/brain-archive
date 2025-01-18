@@ -11,6 +11,7 @@ export default defineSchema({
   chats: defineTable({
     documentId: v.id("documents"),
     tokenIdentifier: v.string(),
+    isHuman: v.boolean(),
     text: v.string(),
   }).index("by_documentId_tokenIdentifier", ["documentId", "tokenIdentifier"]),
 });

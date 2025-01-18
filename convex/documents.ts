@@ -1,10 +1,51 @@
-import { action, mutation, query } from "./_generated/server";
+import {
+  MutationCtx,
+  QueryCtx,
+  action,
+  internalQuery,
+  mutation,
+  query,
+} from "./_generated/server";
 import { ConvexError, v } from "convex/values";
 import { api } from "./_generated/api";
+import { internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 import OpenAI from "openai";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+});
+
+export async function hasAccessToDocument(
+  ctx: MutationCtx | QueryCtx,
+  documentId: Id<"documents">
+) {
+  const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+
+  if (!userId) {
+    return null;
+  }
+
+  const document = await ctx.db.get(documentId);
+
+  if (!document) {
+    return null;
+  }
+
+  if (document?.tokenIdentifier !== userId) {
+    throw new ConvexError("Document not found");
+  }
+
+  return { document, userId };
+}
+
+export const hasAccessToDocumentQuery = internalQuery({
+  args: {
+    documentId: v.id("documents"),
+  },
+  async handler(ctx, args) {
+    return await hasAccessToDocument(ctx, args.documentId);
+  },
 });
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -31,25 +72,15 @@ export const getDocument = query({
     documentId: v.id("documents"),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+    const accessObj = await hasAccessToDocument(ctx, args.documentId);
 
-    if (!userId) {
+    if (!accessObj) {
       return null;
-    }
-
-    const document = await ctx.db.get(args.documentId);
-
-    if (!document) {
-      return null;
-    }
-
-    if (document?.tokenIdentifier !== userId) {
-      throw new ConvexError("Document not found");
     }
 
     return {
-      ...document,
-      documentUrl: await ctx.storage.getUrl(document.fileId),
+      ...accessObj.document,
+      documentUrl: await ctx.storage.getUrl(accessObj.document.fileId),
     };
   },
 });
@@ -79,19 +110,18 @@ export const askQuestion = action({
     documentId: v.id("documents"),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-    if (!userId) {
-      throw new ConvexError("User not authenticated");
-    }
-    const document = await ctx.runQuery(api.documents.getDocument, {
-      documentId: args.documentId,
-    });
+    const accessObj = await ctx.runQuery(
+      internal.documents.hasAccessToDocumentQuery,
+      {
+        documentId: args.documentId,
+      }
+    );
 
-    if (!document) {
-      throw new ConvexError("Document not found");
+    if (!accessObj) {
+      throw new ConvexError("You don't have access to this document");
     }
 
-    const file = await ctx.storage.get(document.fileId);
+    const file = await ctx.storage.get(accessObj.document.fileId);
 
     if (!file) {
       throw new ConvexError("File not found");
@@ -115,9 +145,26 @@ export const askQuestion = action({
       });
 
     //Todo: store user prompt as chat record
+    await ctx.runMutation(internal.chats.createChatRecord, {
+      documentId: args.documentId,
+      text: args.question,
+      isHuman: true,
+      tokenIdentifier: accessObj.userId,
+    });
+
+    const response =
+      chatCompletion.choices[0].message.content ??
+      "could not generate a response";
+
+    await ctx.runMutation(internal.chats.createChatRecord, {
+      documentId: args.documentId,
+      text: response,
+      isHuman: false,
+      tokenIdentifier: accessObj.userId,
+    });
 
     //Todo: store the ai response as a chat record
 
-    return chatCompletion.choices[0].message.content;
+    return response;
   },
 });
