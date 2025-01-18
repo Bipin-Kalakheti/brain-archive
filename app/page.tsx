@@ -18,7 +18,7 @@ export default function Home() {
         <CreateDocumentButton />
       </div>
       {!documents && (
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid grid-cols-3 gap-8">
           {new Array(8).fill(null).map((_, index) => (
             <Card className="h-[200px] p-6 flex flex-col justify-between">
               <Skeleton className="h-6 w-full" />
@@ -45,7 +45,7 @@ export default function Home() {
       )}
 
       {documents && documents.length > 0 && (
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid grid-cols-3 gap-8">
           {documents?.map((doc, index) => (
             <DocumentCard key={index} document={doc} />
           ))}
