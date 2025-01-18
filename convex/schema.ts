@@ -3,9 +3,14 @@ import { v } from "convex/values";
 
 export default defineSchema({
   documents: defineTable({
-    content: v.string(),
     title: v.string(),
     tokenIdentifier: v.string(),
     fileId: v.id("_storage"),
   }).index("by_tokenIdentifier", ["tokenIdentifier"]),
+
+  chats: defineTable({
+    documentId: v.id("documents"),
+    tokenIdentifier: v.string(),
+    text: v.string(),
+  }).index("by_documentId_tokenIdentifier", ["documentId", "tokenIdentifier"]),
 });

@@ -50,7 +50,6 @@ export default function UploadDocumentForm({
 
     await createDocument({
       title: values.title,
-      content: "This is a test",
       fileId: storageId as Id<"_storage">,
     });
     onUpload();

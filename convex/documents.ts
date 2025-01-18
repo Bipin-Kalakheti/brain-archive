@@ -34,7 +34,7 @@ export const getDocument = query({
     const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
 
     if (!userId) {
-      return [];
+      return null;
     }
 
     const document = await ctx.db.get(args.documentId);
@@ -57,7 +57,6 @@ export const getDocument = query({
 export const createDocument = mutation({
   args: {
     title: v.string(),
-    content: v.string(),
     fileId: v.id("_storage"),
   },
   async handler(ctx, args) {
@@ -68,7 +67,6 @@ export const createDocument = mutation({
 
     await ctx.db.insert("documents", {
       title: args.title,
-      content: args.content,
       tokenIdentifier: userId,
       fileId: args.fileId,
     });
@@ -99,11 +97,27 @@ export const askQuestion = action({
       throw new ConvexError("File not found");
     }
 
-    const chatCompletion = await client.chat.completions.create({
-      messages: [{ role: "user", content: "Say this is a test" }],
-      model: "gpt-4o",
-    });
+    const text = await file.text();
 
-    return chatCompletion;
+    const chatCompletion: OpenAI.Chat.Completions.ChatCompletion =
+      await client.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content: `Here is the text file: ${text}`,
+          },
+          {
+            role: "user",
+            content: `Please answer this question:  ${args.question}`,
+          },
+        ],
+        model: "gpt-4o-mini",
+      });
+
+    //Todo: store user prompt as chat record
+
+    //Todo: store the ai response as a chat record
+
+    return chatCompletion.choices[0].message.content;
   },
 });
