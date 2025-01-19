@@ -20,7 +20,7 @@ export function Header() {
             BRAIN ARCHIVE
           </Link>
           <nav className="flex items-center">
-            <Link href="/" className="hover:text-slate-300">
+            <Link href="/dashboard" className="hover:text-slate-300">
               Documents
             </Link>
           </nav>
