@@ -21,7 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  text: z.string().min(2).max(1000),
+  text: z.string().min(2).max(5000),
 });
 
 export default function CreateNoteForm({

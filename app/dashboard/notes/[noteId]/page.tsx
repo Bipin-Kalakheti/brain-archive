@@ -20,7 +20,7 @@ export default function NotesPage() {
     <main className="relative bg-slate-800 rounded-xl p-4">
       <DeleteNoteButton noteId={note._id} />
 
-      <div className="pr-3">{note?.text}</div>
+      <div className="pr-3 whitespace-pre-line">{note?.text}</div>
     </main>
   );
 }

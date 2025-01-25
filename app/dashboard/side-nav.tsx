@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { GearIcon } from "@radix-ui/react-icons";
-import { ClipboardPen, FilesIcon } from "lucide-react";
+import { ClipboardPen, FilesIcon, Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,6 +10,18 @@ export default function SideNav() {
   return (
     <nav>
       <ul className="space-y-6">
+      <li>
+          <Link
+            className={cn(
+              "flex gap-1 items-center text-xl hover:text-blue-500",
+              { "text-blue-500": pathname.endsWith("/search") }
+            )}
+            href="/dashboard/search"
+          >
+            <Search className="w-6 h-6" />
+            Search
+          </Link>
+        </li>
         <li>
           <Link
             className={cn(
