@@ -7,6 +7,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function NotesLayout({
   children,
@@ -25,7 +26,23 @@ export default function NotesLayout({
         <CreateNoteButton />
       </div>
 
-      {!hasNotes && (
+      {!notes && (
+        <div className="flex gap-12">
+          <div className="w-1/3 space-y-4">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+          <div className="flex-1">
+            <Skeleton className="h-24 w-full" />
+          </div>
+        </div>
+      )}
+
+      {notes?.length === 0 && (
         <div className="flex flex-col justify-center items-center space-y-8">
           <Image
             src="/upload-document.svg"
@@ -38,7 +55,7 @@ export default function NotesLayout({
         </div>
       )}
 
-      {hasNotes && (
+      {notes && notes?.length > 0 && (
         <div className="flex gap-2">
           <ul className=" w-1/3">
             {notes?.map((note) => (
