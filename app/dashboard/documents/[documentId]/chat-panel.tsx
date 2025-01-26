@@ -27,7 +27,7 @@ export default function ChatPanel({
                 <span className="font-semibold">AI Assistant</span>
               </div>
               <p className="text-muted-foreground">
-                Ask me any questions about your document. I'll help you
+                Ask me any questions about your document. I&apos;ll help you
                 understand and analyze its content.
               </p>
             </div>

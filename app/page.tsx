@@ -111,7 +111,7 @@ export default function LandingPage() {
                   key={index}
                   className="flex flex-col items-center text-center p-6 rounded-xl bg-card text-card-foreground shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
                 >
-                  <tech.icon className="w-12 h-12 mb-4" />
+                  {tech.icon()}
                   <h3 className="text-lg font-semibold text-foreground">
                     {tech.name}
                   </h3>

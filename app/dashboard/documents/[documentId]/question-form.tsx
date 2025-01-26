@@ -55,12 +55,7 @@ export function QuestionForm({ documentId }: { documentId: Id<"documents"> }) {
             </FormItem>
           )}
         />
-        <LoadingButton
-          size="icon"
-          isLoading={form.formState.isSubmitting}
-          loadingText=""
-          className="shrink-0"
-        >
+        <LoadingButton isLoading={form.formState.isSubmitting} loadingText="">
           <SendHorizontal className="w-4 h-4" />
         </LoadingButton>
       </form>
