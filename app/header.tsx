@@ -23,7 +23,7 @@ export function Header() {
           >
             <div className="relative">
               <Image
-                src="/brain-archive-.png"
+                src="/Brain-Archive.png"
                 width={36}
                 height={36}
                 className="rounded-lg transition-transform group-hover:scale-110"
