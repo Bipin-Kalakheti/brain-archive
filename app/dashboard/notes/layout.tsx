@@ -8,13 +8,17 @@ import { useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useOrganization } from "@clerk/nextjs";
 
 export default function NotesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const notes = useQuery(api.notes.getNotes);
+  const organization = useOrganization();
+  const notes = useQuery(api.notes.getNotes,{
+    orgId: organization.organization?.id,
+  });
   const { noteId } = useParams<{ noteId: Id<"notes"> }>();
 
   const hasNotes = notes && notes.length > 0;

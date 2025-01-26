@@ -1,105 +1,59 @@
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useMutation } from "convex/react";
+"use client";
+
 import { api } from "@/convex/_generated/api";
-import { Loader } from "lucide-react";
-import { LoadingButton } from "@/components/loading-button";
-import { Id } from "@/convex/_generated/dataModel";
+import { useQuery } from "convex/react";
+import { DocumentCard } from "./document-card";
+import CreateDocumentButton from "./upload-document-button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
+import Image from "next/image";
+import { useOrganization } from "@clerk/nextjs";
 
-const formSchema = z.object({
-  title: z.string().min(2).max(50),
-  file: z.instanceof(File),
-});
+export default function Home() {
+  const organization = useOrganization();
 
-export default function UploadDocumentForm({
-  onUpload,
-}: {
-  onUpload: () => void;
-}) {
-  const createDocument = useMutation(api.documents.createDocument);
-  const generateUploadUrl = useMutation(api.documents.generateUploadUrl);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      file: null,
-    },
+  const documents = useQuery(api.documents.getDocuments, {
+    orgId: organization.organization?.id,
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const uploadUrl = await generateUploadUrl();
-
-    const result = await fetch(uploadUrl, {
-      method: "POST",
-      headers: { "Content-Type": values.file.type },
-      body: values.file,
-    });
-    const { storageId } = await result.json();
-
-    await createDocument({
-      title: values.title,
-      fileId: storageId as Id<"_storage">,
-    });
-    onUpload();
-  }
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Expense Report" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <main className="w-full space-y-8">
+      <div className="flex justify-between items-center">
+        <h1 className="text-4xl font-bold">My Documents</h1>
+        <CreateDocumentButton />
+      </div>
 
-        <FormField
-          control={form.control}
-          name="file"
-          render={({ field: { value, onChange, ...fieldProps } }) => (
-            <FormItem>
-              <FormLabel>File</FormLabel>
-              <FormControl>
-                <Input
-                  {...fieldProps}
-                  type="file"
-                  accept=".txt, .xml, .doc"
-                  onChange={(event) => {
-                    const file = event.target.files?.[0];
-                    onChange(file);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <LoadingButton
-          isLoading={form.formState.isSubmitting}
-          loadingText="Uploading"
-        >
-          Upload
-        </LoadingButton>
-      </form>
-    </Form>
+      {!documents && (
+        <div className="grid grid-cols-3 gap-8">
+          {new Array(8).fill("").map((_, i) => (
+            <Card className="h-[200px] p-6 flex flex-col justify-between">
+              <Skeleton className="h-[20px] rounded" />
+              <Skeleton className="h-[20px] rounded" />
+              <Skeleton className="h-[20px] rounded" />
+              <Skeleton className="w-[80px] h-[40px] rounded" />
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {documents && documents.length === 0 && (
+        <div className="py-12 flex flex-col justify-center items-center gap-8">
+          <Image
+            src="/documents.svg"
+            width="200"
+            height="200"
+            alt="a picture of a girl holding documents"
+          />
+          <h2 className="text-2xl">You have no documents</h2>
+          <CreateDocumentButton />
+        </div>
+      )}
+
+      {documents && documents.length > 0 && (
+        <div className="grid grid-cols-3 gap-8">
+          {documents?.map((doc) => <DocumentCard document={doc} />)}
+        </div>
+      )}
+    </main>
   );
 }

@@ -7,9 +7,14 @@ import CreateDocumentButton from "./upload-document-button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
+import { useOrganization } from "@clerk/nextjs";
 
 export default function Home() {
-  const documents = useQuery(api.documents.getDocuments);
+  const organization = useOrganization();
+
+  const documents = useQuery(api.documents.getDocuments, {
+    orgId: organization.organization?.id,
+  });
 
   return (
     <main className="w-full space-y-8">

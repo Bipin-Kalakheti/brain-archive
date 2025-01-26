@@ -31,7 +31,7 @@ export function DocumentCard({ document }: { document: Doc<"documents"> }) {
       </CardContent>
       <CardFooter>
         <Button asChild variant="secondary" className="flex gap-2 items-center">
-          <Link href={`/documents/${document._id}`}>
+          <Link href={`/dashboard/documents/${document._id}`}>
             <Eye className="w-4 h-4" />
             View
           </Link>
