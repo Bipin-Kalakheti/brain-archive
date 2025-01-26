@@ -31,13 +31,13 @@ export default function LandingPage() {
             <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary to-accent opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
           </div>
 
-          <div className="mx-auto max-w-6xl py-32 sm:py-40">
+          <div className="mx-auto max-w-6xl py-16 sm:py-24">
             <div className="text-center">
               <motion.div
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="relative"
+                className="relative inline-block mx-auto"
               >
                 <Image
                   src="/Brain-Archive.png"
