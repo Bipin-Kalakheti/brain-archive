@@ -1,37 +1,61 @@
-import { ModeToggle } from "@/components/ui/theme-toggle";
+"use client";
 
+import { ModeToggle } from "@/components/ui/theme-toggle";
 import Image from "next/image";
 import { HeaderActions } from "./header-actions";
 import Link from "next/link";
 import { OrganizationSwitcher } from "@clerk/nextjs";
+import { Authenticated } from "convex/react";
+import { motion } from "framer-motion";
 
 export function Header() {
   return (
-    <div className="bg-slate-900 py-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="flex gap-12 item-center">
-          <Link href="/" className="flex items-center gap-4 text-2xl">
-            <Image
-              src="/Brain-Archive-.png"
-              alt="Brain-Archive"
-              width={50}
-              height={50}
-              className="rounded"
-            />
-            BRAIN ARCHIVE
+    <motion.div
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className="z-10   border-b shadow-sm backdrop-blur-sm bg-card/80 sticky top-0"
+    >
+      <div className="container mx-auto flex justify-between items-center h-16">
+        <div className="flex gap-8 items-center">
+          <Link
+            href="/"
+            className="flex items-center gap-3 text-xl font-semibold group"
+          >
+            <div className="relative">
+              <Image
+                src="/brain-archive-.png"
+                width={36}
+                height={36}
+                className="rounded-lg transition-transform group-hover:scale-110"
+                alt="Brain Archive logo"
+              />
+            </div>
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              BRAIN ARCHIVE
+            </span>
           </Link>
-          <nav className="flex items-center">
-            <OrganizationSwitcher />
-            <Link href="/dashboard" className="hover:text-slate-300">
-              Documents
-            </Link>
+
+          <nav className="flex items-center gap-8">
+            <div className="p-[2px] rounded-lg bg-accent/10">
+              <OrganizationSwitcher />
+            </div>
+
+            <Authenticated>
+              <Link
+                href="/dashboard"
+                className="hover:text-primary transition-colors font-medium"
+              >
+                Dashboard
+              </Link>
+            </Authenticated>
           </nav>
         </div>
+
         <div className="flex gap-4 items-center">
           <ModeToggle />
           <HeaderActions />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

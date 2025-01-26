@@ -49,29 +49,32 @@ export function SearchForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 gap-2">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="search"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Text</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Search over all your notes and documents using vector search"
-                  {...field}
-                />
-              </FormControl>
+              <div className="flex gap-2">
+                <FormControl>
+                  <Input
+                    className="flex-1"
+                    placeholder="Search over all your notes and documents using vector search"
+                    {...field}
+                  />
+                </FormControl>
+                <LoadingButton
+                  isLoading={form.formState.isSubmitting}
+                  loadingText="Searching..."
+                >
+                  Search
+                </LoadingButton>
+              </div>
               <FormMessage />
             </FormItem>
           )}
         />
-        <LoadingButton
-          isLoading={form.formState.isSubmitting}
-          loadingText="Searching..."
-        >
-          Search
-        </LoadingButton>
       </form>
     </Form>
   );

@@ -8,32 +8,42 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Doc } from "@/convex/_generated/dataModel";
-import { Eye, Loader2, ScanEye, Upload, View } from "lucide-react";
+import { Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export function DocumentCard({ document }: { document: Doc<"documents"> }) {
   return (
-    <Card>
+    <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
       <CardHeader>
-        <CardTitle>{document.title}</CardTitle>
-        <CardDescription>Card Description</CardDescription>
+        <CardTitle className="line-clamp-1">{document.title}</CardTitle>
+        <CardDescription className="line-clamp-1">
+          Added on {new Date(document._creationTime).toLocaleDateString()}
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <p>
+        <p className="h-[80px] overflow-hidden text-muted-foreground">
           {!document.description ? (
-            <div className="flex justify-center">
-              <Loader2 className="animate-spin" />
+            <div className="flex justify-center items-center h-full">
+              <Loader2 className="animate-spin text-accent" />
             </div>
           ) : (
-            document.description
+            <span className="line-clamp-3">{document.description}</span>
           )}
         </p>
       </CardContent>
       <CardFooter>
-        <Button asChild variant="secondary" className="flex gap-2 items-center">
-          <Link href={`/dashboard/documents/${document._id}`}>
+        <Button
+          asChild
+          variant="secondary"
+          className="w-full group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300"
+        >
+          <Link
+            href={`/dashboard/documents/${document._id}`}
+            className="flex gap-2 items-center"
+          >
             <Eye className="w-4 h-4" />
-            View
+            View Document
           </Link>
         </Button>
       </CardFooter>
