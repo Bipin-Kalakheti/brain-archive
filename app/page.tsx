@@ -65,7 +65,7 @@ export default function LandingPage() {
                 </p>
                 <div className="flex items-center justify-center gap-x-6">
                   <Link
-                    href="https://github.com/yourusername/brain-archive"
+                    href="https://github.com/Bipin-Kalakheti/brain-archive"
                     target="_blank"
                   >
                     <Button
